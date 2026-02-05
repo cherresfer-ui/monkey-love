@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Monkey Dingus - Alarm Clock</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .monkey-container {
+            position: relative;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .monkey {
+            width: 200px;
+            height: 230px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin: 0 auto;
+        }
+
+        .monkey:hover {
+            transform: scale(1.08);
+        }
+
+        .monkey.sleeping {
+            animation: breathe 2s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        .monkey.waking {
+            animation: shake 0.5s ease-in-out infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+
+        /* Cuerpo */
+        .body {
+            width: 120px;
+            height: 130px;
+            background: #8B5A3C;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .belly {
+            width: 80px;
+            height: 90px;
+            background: #F4DFC8;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Cabeza */
+        .head {
+            width: 130px;
+            height: 120px;
+            background: #8B5A3C;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .face {
+            width: 95px;
+            height: 80px;
+            background: #F4DFC8;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -40%);
+        }
+
+        /* Orejas */
+        .ear {
+            width: 40px;
+            height: 45px;
+            background: #8B5A3C;
+            border-radius: 50%;
+            position: absolute;
+            top: 20px;
+        }
+
+        .ear-left {
+            left: -15px;
+        }
+
+        .ear-right {
+            right: -15px;
+        }
+
+        .ear-inner {
+            width: 23px;
+            height: 25px;
+            background: #F4DFC8;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Ojos */
+        .eyes {
+            display: flex;
+            gap: 25px;
+            position: absolute;
+            top: 42%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .eye {
+            width: 20px;
+            height: 23px;
+            background: #000;
+            border-radius: 50%;
+            position: relative;
+            animation: blink 4s infinite;
+        }
+
+        @keyframes blink {
+            0%, 48%, 52%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.1); }
+        }
+
+        .eye-shine {
+            width: 7px;
+            height: 7px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 5px;
+            left: 5px;
+        }
+
+        .eye.happy {
+            width: 23px;
+            height: 5px;
+            border-radius: 0 0 100px 100px;
+            background: #000;
+            animation: none;
+        }
+
+        .eye.love {
+            width: 23px;
+            height: 23px;
+            background: none;
+            animation: none;
+        }
+
+        .eye.love::before {
+            content: '❤️';
+            font-size: 18px;
+            position: absolute;
+            top: -3px;
+            left: -1px;
+        }
+
+        .eye.sleeping {
+            width: 25px;
+            height: 3px;
+            background: #000;
+            border-radius: 2px;
+            animation: none;
+        }
+
+        /* Nariz */
+        .nose {
+            width: 13px;
+            height: 10px;
+            background: #6B4423;
+            border-radius: 50%;
+            position: absolute;
+            top: 58%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Boca */
+        .mouth {
+            width: 33px;
+            height: 17px;
+            border: 2px solid #6B4423;
+            border-top: none;
+            border-radius: 0 0 50px 50px;
+            position: absolute;
+            top: 65%;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: all 0.3s ease;
+        }
+
+        .mouth.happy {
+            width: 40px;
+            height: 23px;
+        }
+
+        .mouth.sad {
+            border-bottom: none;
+            border-top: 2px solid #6B4423;
+            border-radius: 50px 50px 0 0;
+            top: 72%;
+        }
+
+        .mouth.open {
+            width: 25px;
+            height: 25px;
+            border: 2px solid #6B4423;
+            border-radius: 50%;
+            background: #FF6B9D;
+        }
+
+        /* Brazos */
+        .arm {
+            width: 33px;
+            height: 80px;
+            background: #8B5A3C;
+            border-radius: 17px;
+            position: absolute;
+            top: 120px;
+        }
+
+        .arm-left {
+            left: 20px;
+            transform: rotate(-20deg);
+            animation: wave-left 2s ease-in-out infinite;
+        }
+
+        .arm-right {
+            right: 20px;
+            transform: rotate(20deg);
+            animation: wave-right 2s ease-in-out infinite;
+        }
+
+        @keyframes wave-left {
+            0%, 100% { transform: rotate(-20deg); }
+            50% { transform: rotate(-35deg); }
+        }
+
+        @keyframes wave-right {
+            0%, 100% { transform: rotate(20deg); }
+            50% { transform: rotate(35deg); }
+        }
+
+        .hand {
+            width: 30px;
+            height: 30px;
+            background: #8B5A3C;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Piernas */
+        .leg {
+            width: 33px;
+            height: 55px;
+            background: #8B5A3C;
+            border-radius: 17px;
+            position: absolute;
+            bottom: -10px;
+        }
+
+        .leg-left {
+            left: 27px;
+        }
+
+        .leg-right {
+            right: 27px;
+        }
+
+        .foot {
+            width: 37px;
+            height: 23px;
+            background: #8B5A3C;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -7px;
+            left: -3px;
+        }
+
+        /* Cola */
+        .tail {
+            width: 55px;
+            height: 55px;
+            border: 13px solid #8B5A3C;
+            border-radius: 50%;
+            border-left: none;
+            border-top: none;
+            position: absolute;
+            bottom: 55px;
+            right: -20px;
+            transform: rotate(45deg);
+        }
+
+        .blush {
+            width: 17px;
+            height: 10px;
+            background: rgba(255, 182, 193, 0.7);
+            border-radius: 50%;
+            position: absolute;
+            top: 65%;
+        }
+
+        .blush-left {
+            left: 7px;
+        }
+
+        .blush-right {
+            right: 7px;
+        }
+
+        /* Z's para dormir */
+        .zzz {
+            position: absolute;
+            font-size: 30px;
+            color: white;
+            opacity: 0;
+            animation: float-zzz 2s ease-in-out infinite;
+        }
+
+        .zzz1 { top: -30px; left: 120px; animation-delay: 0s; }
+        .zzz2 { top: -50px; left: 140px; animation-delay: 0.5s; }
+        .zzz3 { top: -70px; left: 160px; animation-delay: 1s; }
+
+        @keyframes float-zzz {
+            0%, 100% { opacity: 0; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-10px); }
+        }
+
+        /* Mensaje */
+        .message-box {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-top: 25px;
+            position: relative;
+            display: inline-block;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .message-box::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 12px solid white;
+        }
+
+        .message {
+            font-size: 22px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #FF6B9D, #C06C84, #6C5B7B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .message.alarm-message {
+            font-size: 26px;
+            animation: shake-text 0.5s ease-in-out infinite;
+        }
+
+        @keyframes shake-text {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
+        }
+
+        /* Cronómetro y Alarma */
+        .alarm-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 20px;
+            margin-top: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .alarm-section h2 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .timer-display {
+            font-size: 48px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .alarm-inputs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .alarm-inputs input {
+            width: 80px;
+            padding: 10px;
+            font-size: 18px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .alarm-inputs label {
+            font-weight: bold;
+            color: #764ba2;
+        }
+
+        .buttons {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: linear-gradient(135deg, #FF6B9D 0%, #C06C84 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 107, 157, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 107, 157, 0.6);
+        }
+
+        button:active {
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1000;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 30px;
+            animation: fall 4s linear;
+            opacity: 0;
+        }
+
+        @keyframes fall {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        .title {
+            color: white;
+            font-size: 32px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .alarm-ringing {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 107, 157, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            animation: pulse-bg 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse-bg {
+            0%, 100% { opacity: 0.95; }
+            50% { opacity: 1; }
+        }
+
+        .alarm-content {
+            text-align: center;
+            color: white;
+        }
+
+        .alarm-content h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .stop-alarm-btn {
+            background: white;
+            color: #FF6B9D;
+            font-size: 24px;
+            padding: 20px 40px;
+            border-radius: 30px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts" id="hearts"></div>
+    
+    <!-- Alarma sonando -->
+    <div class="alarm-ringing" id="alarmRinging">
+        <div class="alarm-content">
+            <h1>⏰ MY MONKEY IT'S TIME TO WAKE UP! ⏰</h1>
+            <div style="font-size: 80px; margin: 20px 0;">🐵</div>
+            <button class="stop-alarm-btn" onclick="stopAlarm()">WAKE UP! 😊</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 class="title">🐵 MY MONKEY DINGUS 💕</h1>
+        
+        <div class="monkey-container">
+            <div class="monkey" id="monkey" onclick="randomExpression()">
+                <div class="zzz zzz1" id="zzz1" style="display: none;">Z</div>
+                <div class="zzz zzz2" id="zzz2" style="display: none;">Z</div>
+                <div class="zzz zzz3" id="zzz3" style="display: none;">Z</div>
+                
+                <!-- Cola -->
+                <div class="tail"></div>
+                
+                <!-- Cuerpo -->
+                <div class="body">
+                    <div class="belly"></div>
+                    <div class="arm arm-left">
+                        <div class="hand"></div>
+                    </div>
+                    <div class="arm arm-right">
+                        <div class="hand"></div>
+                    </div>
+                    <div class="leg leg-left">
+                        <div class="foot"></div>
+                    </div>
+                    <div class="leg leg-right">
+                        <div class="foot"></div>
+                    </div>
+                </div>
+                
+                <!-- Cabeza -->
+                <div class="head">
+                    <div class="ear ear-left">
+                        <div class="ear-inner"></div>
+                    </div>
+                    <div class="ear ear-right">
+                        <div class="ear-inner"></div>
+                    </div>
+                    
+                    <div class="face">
+                        <div class="eyes" id="eyes">
+                            <div class="eye">
+                                <div class="eye-shine"></div>
+                            </div>
+                            <div class="eye">
+                                <div class="eye-shine"></div>
+                            </div>
+                        </div>
+                        <div class="blush blush-left"></div>
+                        <div class="blush blush-right"></div>
+                        <div class="nose"></div>
+                        <div class="mouth" id="mouth"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="message-box">
+            <div class="message" id="message">I LOVE YOU! 💕</div>
+        </div>
+
+        <div class="buttons">
+            <button onclick="setExpression('love')">💕 I LOVE YOU</button>
+            <button onclick="setExpression('miss')">🥺 MISS YOU</button>
+            <button onclick="setExpression('safe')">🛡️ BE SAFE</button>
+            <button onclick="setExpression('healthy')">🍎 I WANT YOU HEALTHY</button>
+        </div>
+
+        <!-- Alarm Section -->
+        <div class="alarm-section">
+            <h2>⏰ Alarm Clock</h2>
+            <div class="timer-display" id="timerDisplay">00:00:00</div>
+            
+            <div class="alarm-inputs">
+                <label>Hours:</label>
+                <input type="number" id="hours" min="0" max="23" value="0" />
+                <label>Minutes:</label>
+                <input type="number" id="minutes" min="0" max="59" value="0" />
+                <label>Seconds:</label>
+                <input type="number" id="seconds" min="0" max="59" value="30" />
+            </div>
+
+            <div class="buttons">
+                <button onclick="startAlarm()" id="startBtn">▶️ Start Alarm</button>
+                <button onclick="pauseAlarm()" id="pauseBtn" disabled>⏸️ Pause</button>
+                <button onclick="resetAlarm()" id="resetBtn">🔄 Reset</button>
+                <button onclick="setSleepMode()">😴 Sleep Mode</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let timerInterval;
+        let totalSeconds = 0;
+        let isRunning = false;
+        let alarmAudio;
+
+        const messages = {
+            love: "I LOVE YOU! 💕",
+            miss: "MISS YOU! 🥺",
+            safe: "BE SAFE! 🛡️",
+            healthy: "I WANT YOU HEALTHY! 🍎",
+            sleep: "SLEEPING... 😴💤",
+            wakeup: "MY MONKEY IT'S TIME TO WAKE UP! ⏰"
+        };
+
+        function setExpression(type) {
+            const eyes = document.getElementById('eyes');
+            const mouth = document.getElementById('mouth');
+            const message = document.getElementById('message');
+            const monkey = document.getElementById('monkey');
+            
+            // Reset
+            eyes.innerHTML = '';
+            mouth.className = 'mouth';
+            monkey.classList.remove('sleeping', 'waking');
+            hideZzz();
+            
+            if (type === 'love') {
+                eyes.innerHTML = `
+                    <div class="eye love"></div>
+                    <div class="eye love"></div>
+                `;
+                mouth.classList.add('happy');
+                message.textContent = messages.love;
+                createHearts();
+            } else if (type === 'miss') {
+                eyes.innerHTML = `
+                    <div class="eye">
+                        <div class="eye-shine"></div>
+                    </div>
+                    <div class="eye">
+                        <div class="eye-shine"></div>
+                    </div>
+                `;
+                mouth.classList.add('sad');
+                message.textContent = messages.miss;
+            } else if (type === 'safe') {
+                eyes.innerHTML = `
+                    <div class="eye happy"></div>
+                    <div class="eye happy"></div>
+                `;
+                mouth.classList.add('happy');
+                message.textContent = messages.safe;
+            } else if (type === 'healthy') {
+                eyes.innerHTML = `
+                    <div class="eye">
+                        <div class="eye-shine"></div>
+                    </div>
+                    <div class="eye">
+                        <div class="eye-shine"></div>
+                    </div>
+                `;
+                mouth.classList.add('happy');
+                message.textContent = messages.healthy;
+            } else if (type === 'sleep') {
+                eyes.innerHTML = `
+                    <div class="eye sleeping"></div>
+                    <div class="eye sleeping"></div>
+                `;
+                mouth.className = 'mouth';
+                message.textContent = messages.sleep;
+                monkey.classList.add('sleeping');
+                showZzz();
+            } else if (type === 'wakeup') {
+                eyes.innerHTML = `
+                    <div class="eye">
+                        <div class="eye-shine"></div>
+                    </div>
+                    <div class="eye">
+                        <div class="eye-shine"></div>
+                    </div>
+                `;
+                mouth.classList.add('open');
+                message.className = 'message alarm-message';
+                message.textContent = messages.wakeup;
+                monkey.classList.add('waking');
+            }
+        }
+
+        function showZzz() {
+            document.getElementById('zzz1').style.display = 'block';
+            document.getElementById('zzz2').style.display = 'block';
+            document.getElementById('zzz3').style.display = 'block';
+        }
+
+        function hideZzz() {
+            document.getElementById('zzz1').style.display = 'none';
+            document.getElementById('zzz2').style.display = 'none';
+            document.getElementById('zzz3').style.display = 'none';
+        }
+
+        function setSleepMode() {
+            setExpression('sleep');
+        }
+
+        function randomExpression() {
+            const types = ['love', 'miss', 'safe', 'healthy'];
+            const randomType = types[Math.floor(Math.random() * types.length)];
+            setExpression(randomType);
+        }
+
+        function createHearts() {
+            const heartsContainer = document.getElementById('hearts');
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.textContent = '💕';
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                    heartsContainer.appendChild(heart);
+                    
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 4000);
+                }, i * 100);
+            }
+        }
+
+        // Funciones del cronómetro
+        function updateDisplay() {
+            const hrs = Math.floor(totalSeconds / 3600);
+            const mins = Math.floor((totalSeconds % 3600) / 60);
+            const secs = totalSeconds % 60;
+            
+            document.getElementById('timerDisplay').textContent = 
+                `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function startAlarm() {
+            if (!isRunning) {
+                const hours = parseInt(document.getElementById('hours').value) || 0;
+                const minutes = parseInt(document.getElementById('minutes').value) || 0;
+                const seconds = parseInt(document.getElementById('seconds').value) || 0;
+                
+                totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
+                
+                if (totalSeconds <= 0) {
+                    alert('Please enter a valid time');
+                    return;
+                }
+                
+                isRunning = true;
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('pauseBtn').disabled = false;
+                
+                setSleepMode();
+                
+                timerInterval = setInterval(() => {
+                    totalSeconds--;
+                    updateDisplay();
+                    
+                    if (totalSeconds <= 0) {
+                        clearInterval(timerInterval);
+                        triggerAlarm();
+                    }
+                }, 1000);
+            }
+        }
+
+        function pauseAlarm() {
+            if (isRunning) {
+                clearInterval(timerInterval);
+                isRunning = false;
+                document.getElementById('startBtn').disabled = false;
+                document.getElementById('pauseBtn').disabled = true;
+            }
+        }
+
+        function resetAlarm() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            totalSeconds = 0;
+            updateDisplay();
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('pauseBtn').disabled = true;
+            document.getElementById('hours').value = 0;
+            document.getElementById('minutes').value = 0;
+            document.getElementById('seconds').value = 30;
+            randomExpression();
+        }
+
+        function triggerAlarm() {
+            setExpression('wakeup');
+            document.getElementById('alarmRinging').style.display = 'flex';
+            
+            // Crear sonido de alarma (beep beep)
+            playAlarmSound();
+        }
+
+        function stopAlarm() {
+            document.getElementById('alarmRinging').style.display = 'none';
+            if (alarmAudio) {
+                alarmAudio.pause();
+                alarmAudio = null;
+            }
+            randomExpression();
+            resetAlarm();
+        }
+
+        function playAlarmSound() {
+            // Crear contexto de audio
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            let beepCount = 0;
+            
+            function beep() {
+                if (beepCount < 20) {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = 800;
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.5);
+                    
+                    beepCount++;
+                    setTimeout(beep, 600);
+                }
+            }
+            
+            beep();
+        }
+
+        // Cambiar expresión automáticamente cada 5 segundos si no está durmiendo
+        setInterval(() => {
+            if (!isRunning) {
+                randomExpression();
+            }
+        }, 5000);
+        
+        // Crear corazones al cargar
+        createHearts();
+    </script>
+</body>
+</html>
+
